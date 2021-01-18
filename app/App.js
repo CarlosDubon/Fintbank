@@ -21,6 +21,7 @@ import authReducer from './modules/store/reducers/auth'
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 
 import ReduxThunk from 'redux-thunk';
+import StartupScreen from './components/Pages/StartupScreen';
 
 const rootReducer = combineReducers({
     auth: authReducer
@@ -37,6 +38,7 @@ const App = () => {
                 <Stack.Navigator
                     headerMode={"none"}
                 >
+                    <Stack.Screen name="Startup" component={StartupScreen} />
                     <Stack.Screen name="Login" component={Login} />
                     <Stack.Screen name="Home" component={Home} />
                     <Stack.Screen name="SignUp" component={SignUp} />

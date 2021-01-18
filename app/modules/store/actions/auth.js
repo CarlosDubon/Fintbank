@@ -7,9 +7,8 @@ export const LOGOUT = 'LOGOUT';
 
 let timer;
 
-export const authenticate = (token, expiryTime) => {
+export const authenticate = (token) => {
   return dispatch => {
-    dispatch(setLogoutTimer(expiryTime));
     dispatch({ type: AUTHENTICATE, token: token });
   };
 };
@@ -17,14 +16,14 @@ export const authenticate = (token, expiryTime) => {
 export const login = (email, password) => {
   return async dispatch => {
     if (email !== "" && password !== "") {
-
-      
+ 
       try {
-        const res = await fetch(``,
+        const res = await fetch(`http://209.97.152.122:3001/auth/login`,
           {
             method: 'POST',
             headers: {
-              'AUTHORIZATION': 'Bearer Token'
+              'Authorization': 'Bearer Token',
+              'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               usuario: email,
@@ -32,14 +31,14 @@ export const login = (email, password) => {
             })
           });
         const resData = await res.json();
-        if (resData) {
+        if (resData.data.usuario.token) {
           console.log('todo bien con el login')
           console.log(resData)
-          dispatch(authenticate(resData.access_token, parseInt(resData.expires_in) * 1000));
-          const expirationDate = new Date(
+          dispatch(authenticate(resData.data.usuario.token));
+          /*const expirationDate = new Date(
             new Date().getTime() + parseInt(resData.expires_in) * 1000
-          );
-          saveDataToStorage(resData.access_token, expirationDate);
+          );*/
+          saveDataToStorage(resData.data.usuario.token);
           return resData;
         }
 
@@ -54,12 +53,11 @@ export const login = (email, password) => {
 
 
 
-const saveDataToStorage = (token, expirationDate) => {
+const saveDataToStorage = (token) => {
   AsyncStorage.setItem(
     'userData',
     JSON.stringify({
       token: token,
-      expiryDate: expirationDate.toISOString()
     })
   );
 };

@@ -12,6 +12,8 @@ const TransactionHistory = (props) => {
     const navigation = useNavigation()
     const [data,setData] = useState([0,1,0])
     const renderItem = ({item}) => (<TransactionResumeItem data={item}/>)
+
+    
     return (
         <Block flex={1}>
             <Block row space={"between"}>

@@ -8,7 +8,7 @@ import * as authActions from '../../modules/store/actions/auth'
 const Login = (props) => {
     const [error, setError] = useState();
     const dispatch = useDispatch();
-    const [email, setEmail] = useState('')
+    const [user, setUser] = useState('')
     const [password, setPassword] = useState('')
 
     useEffect(() => {
@@ -21,12 +21,12 @@ const Login = (props) => {
    
     const handleLogin = async () => {
         let action;
-        action = authActions.login(email, password);
+        action = authActions.login(user, password);
         setError(null);
         try {
             let valor = await dispatch(action);
-            if (valor) {
-                console.log(valor)
+            if (valor.data.usuario.token) {
+                console.log(valor.data.usuario.token)
                 props.navigation.navigate("Home");
             }
 
@@ -54,10 +54,10 @@ const Login = (props) => {
                     </Block>
                     <Block style={{ marginTop: 80 }}>
                         <Block>
-                            <Input placeholder={"Correo electrónico"} />
+                            <Input placeholder={"Usuario"} value={user} onChangeText={text => setUser(text)}/>
                         </Block>
                         <Block style={{ marginTop: 8 }}>
-                            <Input placeholder={"Contraseña"} password viewPass />
+                            <Input placeholder={"Contraseña"} password viewPass value={password} onChangeText={text => setPassword(text)} />
                         </Block>
                         <Block right>
                             <TouchableOpacity>
@@ -67,7 +67,7 @@ const Login = (props) => {
                         <Block style={{ marginTop: 24 }}>
                             <Button
                                 color={colors.PRIMARY}
-                                onPress={() => props.navigation.navigate("Home")}
+                                onPress={() => handleLogin()}
                                 round>Iniciar sesión</Button>
                         </Block>
                     </Block>

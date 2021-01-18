@@ -9,33 +9,34 @@ const SignUp = (props) => {
   const [password, setPassword] = useState('')
   const [confirm_password, setConfirmPassword] = useState('')
   const [nombre, setNombre] = useState('')
-
+  const [telefono, setTelefono] = useState('')
+  const [user, setUser] = useState('')
 
   const handleLogin = async () => {
     if (password === confirm_password) {
       if (email !== "" && password !== "" && nombre !== "" && dui !== "" && confirm_password !== "") {
         try {
-          const res = await fetch(``,
+          const res = await fetch(`http://209.97.152.122:3001/auth/register`,
             {
               method: 'POST',
               headers: {
-                'AUTHORIZATION': 'Bearer Token'
+                'Authorization': 'Bearer Token',
+                'Content-Type': 'application/json'
               },
-              body: JSON.stringify({
-                nombre: nombre,
+              body:JSON.stringify({
+                nombre_completo: nombre,
+                usuario: user,
                 correo: email,
-                contraseña: password,
+                contrasena: password,
                 documento_identidad: dui,
-                pais: 1,
-                usuario: usuarioprueba,
+                telefono: telefono,
               })
             });
           const resData = await res.json();
-          if (resData.data) {
-            console.log('todo bien con el registro')
-            console.log(resData)
-            nextPage();
-          }
+          console.log('todo bien con el registro')
+          console.log(resData)
+          nextPage();
+
 
         } catch (e) {
           console.log(e)
@@ -47,7 +48,7 @@ const SignUp = (props) => {
 
   }
   const nextPage = () => {
-    props.navigation.replace("Home")
+    props.navigation.replace("Login")
   }
   return (
     <Block flex={1}>
@@ -70,6 +71,9 @@ const SignUp = (props) => {
               <Input material placeholder={"Nombre completo"} value={nombre} onChangeText={text => setNombre(text)} />
             </Block>
             <Block>
+              <Input material placeholder={"Usuario"} value={user} onChangeText={text => setUser(text)} />
+            </Block>
+            <Block>
               <Input material placeholder={"Numero unico de identidad (DUI)"} value={dui} onChangeText={text => setDui(text)} />
             </Block>
             <Block>
@@ -81,9 +85,12 @@ const SignUp = (props) => {
             <Block style={{ marginTop: 8 }}>
               <Input material placeholder={"Confirmar contraseña"} password viewPass value={confirm_password} onChangeText={text => setConfirmPassword(text)} />
             </Block>
+            <Block>
+              <Input material placeholder={"Telefono"} value={telefono} onChangeText={text => setTelefono(text)} />
+            </Block>
             <Block style={{ marginTop: 24 }}>
               <Button
-                onPress={() => props.navigation.navigate("Home")}
+                onPress={() => handleLogin()}
                 round>Registrarme</Button>
             </Block>
           </Block>
