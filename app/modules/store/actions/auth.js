@@ -7,9 +7,9 @@ export const LOGOUT = 'LOGOUT';
 
 let timer;
 
-export const authenticate = (token) => {
+export const authenticate = (token, name) => {
   return dispatch => {
-    dispatch({ type: AUTHENTICATE, token: token });
+    dispatch({ type: AUTHENTICATE, token: token, name: name });
   };
 };
 
@@ -34,13 +34,13 @@ export const login = (email, password) => {
         if (resData.data.usuario.token) {
           console.log('todo bien con el login')
           console.log(resData)
-          dispatch(authenticate(resData.data.usuario.token));
+          dispatch(authenticate(resData.data.usuario.token, resData.data.usuario.nombre_completo));
           /*const expirationDate = new Date(
             new Date().getTime() + parseInt(resData.expires_in) * 1000
           );*/
-          saveDataToStorage(resData.data.usuario.token);
+          saveDataToStorage(resData.data.usuario.token, resData.data.usuario.nombre_completo);
           return resData;
-        }
+        } 
 
       } catch (e) {
         console.log(e)
@@ -53,11 +53,12 @@ export const login = (email, password) => {
 
 
 
-const saveDataToStorage = (token) => {
+const saveDataToStorage = (token, name) => {
   AsyncStorage.setItem(
     'userData',
     JSON.stringify({
       token: token,
+      name:name
     })
   );
 };

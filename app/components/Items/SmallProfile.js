@@ -15,7 +15,7 @@ const SmallProfile = (props) => {
             </Block>
             <Block flex={1} middle left style={{marginStart:16}}>
                 <Block>
-                    <Text color={colors.BLACK} bold size={20}>Carlos Dubon</Text>
+                    <Text color={colors.BLACK} bold size={20}>{props.name}</Text>
                 </Block>
                 <Block>
                     <Text color={colors.MUTED}>Cuenta corriente</Text>

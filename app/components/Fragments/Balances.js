@@ -10,6 +10,12 @@ import { useSelector } from 'react-redux';
 
 const Balances = (props) => {
     const isAuth = useSelector(state => state.auth.token);
+    const name = useSelector(state => state.auth.name);
+    const [cuenta, setcuenta] = useState()
+    const [cuenta2, setcuenta2] = useState()
+    const [cuenta3, setcuenta3] = useState()
+    const [saldo, setsaldo] = useState()
+    const [fecha, setfecha] = useState()
     const ultimasTransacciones = async () => {
         try {
             console.log(isAuth)
@@ -44,6 +50,11 @@ const Balances = (props) => {
             const resData = await res.json();
             console.log('todo bien con los datos')
             console.log(resData)
+            setcuenta(resData.data[0].id.substr(0,4))
+            setcuenta2(resData.data[0].id.substr(4,4))
+            setcuenta3(resData.data[0].id.substr(8,4))
+            setsaldo(resData.data[0].saldo)
+            setfecha(resData.data[0].created_at.substr(0,10))
         } catch (e) {
             console.log('fallo con lo de la cuenta')
             console.log(e)
@@ -56,9 +67,9 @@ const Balances = (props) => {
     }, [isAuth])
     return (
         <Block flex={1} >
-            <SmallProfile />
+            <SmallProfile name={name}/>
             <Block style={{ margin: 16 }}>
-                <VirtualAccountCard />
+                <VirtualAccountCard  cuenta={cuenta} cuenta2={cuenta2} cuenta3={cuenta3} saldo={saldo} fecha={fecha}/>
             </Block>
             <Block flex={1} style={styles.historyContainer}>
                 <TransactionHistory />
