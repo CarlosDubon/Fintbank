@@ -8,6 +8,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Feather from "react-native-vector-icons/Feather";
 import SendMoney from "../Fragments/SendMoney";
 import Profile from "../Fragments/Profile";
+import OptionsQR from '../Items/OptionsQR';
 
 
 const Home = (props) => {
@@ -27,13 +28,13 @@ const Home = (props) => {
                     }}
                 />
                 <Tab.Screen
-                    name="Enviar" component={SendMoney}
+                    name="Pagos" component={SendMoney}
                     options={{
                         tabBarIcon:({focused,color})=>(<Icon name={"arrow-up-circle"} color={color} size={25}/> )
                     }}
                 />
                 <Tab.Screen
-                    name="Retirar" component={Balances}
+                    name="QR" component={OptionsQR}
                     options={{
                         tabBarIcon:({focused,color})=>(<Icon name={"arrow-down-circle"} color={color} size={25}/> )
                     }}

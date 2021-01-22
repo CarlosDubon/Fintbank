@@ -48,6 +48,7 @@ const SignUp = (props) => {
           else {
             console.log('todo bien con el registro')
             console.log(resData)
+            Alert.alert('Usurio creado!', resData.msg, [{ text: 'Okay' }])
             nextPage();
           }
           seterror(false)
