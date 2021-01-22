@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, TouchableOpacity, FlatList, ScrollView, View } from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { Image, StyleSheet, TouchableOpacity, FlatList, ScrollView, View, Alert } from 'react-native'
 import { Block, Button, Input, Text } from "galio-framework";
 import colors from "../../modules/colors";
 import Icon from "react-native-vector-icons/Entypo";
 import Card from "../Containers/Card";
 import transaccion from '../../models/transaccion';
 import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 const SendMoney = (props) => {
+
+    const navigation = useNavigation();
+    const tarjeta = useSelector(state => state.auth.tarjeta);
     const [money, setMoney] = useState(50)
     const [suggest, setSuggest] = useState([50, 100, 150, 300])
     const [transacciones, setTransacciones] = useState([])
     const isAuth = useSelector(state => state.auth.token);
+
+    const alerta=((mensaje) => {
+            Alert.alert('¡Un error ocurrio!', mensaje, [{ text: 'Okay' }])
+    })
 
     const renderItem = ({ item }) => (
         <TouchableOpacity
@@ -38,8 +46,11 @@ const SendMoney = (props) => {
                                 {emptyAvatar}
                             </Block>
                             <Block flex={1} style={{ marginStart: 8 }}>
-                                <Input placeholder={"Ingrese la cuenta destino"} borderless onChangeText={text => handleChange(i, text)} value={transacciones[i]} />
+                                <Input placeholder={"Ingrese la cuenta destino"} borderless onChangeText={text => handleChange(i, text, transacciones[i].monto)} value={transacciones[i]} />
+                                <Input placeholder={"Monto"} borderless onChangeText={text => handleChange(i, transacciones[i].cuenta, text)} value={transacciones[i].monto} />
+
                             </Block>
+
                         </Block>
                     </Block>
                 </Card>
@@ -48,12 +59,12 @@ const SendMoney = (props) => {
 
     );
 
-    const handleChange = (i, texto) => {
+    const handleChange = (i, texto, otro) => {
         let values = [...transacciones];
         const newTrasanccion = new transaccion();
         newTrasanccion.id = i;
         newTrasanccion.cuenta = texto;
-        newTrasanccion.monto = money;
+        newTrasanccion.monto = otro;
         newTrasanccion.tipo = 1;
         newTrasanccion.concepto = 'Sueldo';
 
@@ -62,8 +73,10 @@ const SendMoney = (props) => {
     }
     const addClick = () => {
         setTransacciones(prevState => ([...transacciones, '']))
+        console.log(tarjeta)
     }
     const Send = async () => {
+        console.log('LO QUE SE ENVIA')
         console.log(transacciones)
         let res;
         try {
@@ -77,10 +90,12 @@ const SendMoney = (props) => {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            cuenta_remitente: '12345678',
+                            cuenta_remitente: tarjeta,
                             destinos: transacciones
                         })
                     });
+
+
             }
             else {
                 console.log('SOLO UNA TRANSACCION')
@@ -92,9 +107,9 @@ const SendMoney = (props) => {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            cuenta_remitente: '12345678',
+                            cuenta_remitente: tarjeta,
                             cuenta_destino: transacciones[0].cuenta,
-                            monto: transacciones[0].cuenta,
+                            monto: transacciones[0].monto,
                             concepto: transacciones[0].concepto,
                         })
                     });
@@ -103,6 +118,12 @@ const SendMoney = (props) => {
             const resData = await res.json();
             console.log('todo bien con la transaccion')
             console.log(resData)
+            if (resData.ok === true) {
+                navigation.replace('Home');
+            }
+            else{
+                alerta(resData.msg)
+            }
         } catch (e) {
             console.log('fallo con las transaccion')
             console.log(e)
@@ -112,51 +133,14 @@ const SendMoney = (props) => {
     return (
         <Block flex={1}>
             <Image style={styles.bkgd} source={require("../../modules/images/background-top.png")} />
-
             <Block style={{ marginTop: 24 }}>
                 <Text h4 bold center color={colors.BLACK}>Enviar dinero</Text>
-                <Text h5 bold center color={colors.MUTED}>¿Que cantidad deseas enviar?</Text>
             </Block>
             <Block flex={1} style={styles.container} >
                 <Block flex={1}>
-                    <Block>
-                        <Text center color={colors.MUTED} bold>Ajusta la cantidad que deseas enviar</Text>
-                    </Block>
-                    <Block row style={{ marginTop: 32 }}>
-                        <Block flex={1} middle>
-                            <TouchableOpacity
-                                onPress={() => setMoney(money - 5)}
-                            >
-                                <Block style={styles.button}>
-                                    <Icon name={"minus"} color={colors.MUTED} size={20} />
-                                </Block>
-                            </TouchableOpacity>
-                        </Block>
-                        <Block flex={2} middle>
-                            <Text center size={72} color={colors.PRIMARY}>${money}</Text>
-                        </Block>
-                        <Block flex={1} middle>
-                            <TouchableOpacity
-                                onPress={() => setMoney(money + 5)}
-                            >
-                                <Block style={styles.button}>
-                                    <Icon name={"plus"} color={colors.MUTED} size={20} />
-                                </Block>
-                            </TouchableOpacity>
-                        </Block>
-                    </Block>
-                    <Block style={{ marginTop: 24 }} row center>
-                        <FlatList
-                            data={suggest}
-                            renderItem={renderItem}
-                            keyExtractor={item => item.toString()}
-                            horizontal
-                            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-                        />
-                    </Block>
                     <Block style={{ marginTop: 16 }}>
                         <Block>
-                            <Text bold p color={colors.BLACK}>Destinatario:</Text>
+                            <Text bold p color={colors.BLACK}>{transacciones[1] ? "Destinatarios" : "Destinatario"}</Text>
                         </Block>
                     </Block>
                     <ScrollView>
@@ -164,7 +148,7 @@ const SendMoney = (props) => {
                     </ScrollView>
                 </Block>
                 <Block>
-                    <Button color={colors.PRIMARY} style={{ marginBottom: 10 }} round onPress={addClick}>Agregar otro destinatario</Button>
+                    <Button color={colors.PRIMARY} style={{ marginBottom: 10 }} round onPress={addClick}>Agregar destinatario</Button>
                 </Block>
                 <Block>
                     <Button color={colors.PRIMARY} round onPress={Send}>Enviar</Button>

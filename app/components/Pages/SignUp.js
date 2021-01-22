@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { Block, Button, Input, Text } from "galio-framework";
 import colors from "../../modules/colors";
 
@@ -11,6 +11,14 @@ const SignUp = (props) => {
   const [nombre, setNombre] = useState('')
   const [telefono, setTelefono] = useState('')
   const [user, setUser] = useState('')
+  const [error, seterror] = useState('')
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('An error Ocurred!', 'No se pudo registrar el usuario', [{ text: 'Okay' }])
+    }
+
+  }, [error]);
 
   const handleLogin = async () => {
     if (password === confirm_password) {
@@ -23,7 +31,7 @@ const SignUp = (props) => {
                 'Authorization': 'Bearer Token',
                 'Content-Type': 'application/json'
               },
-              body:JSON.stringify({
+              body: JSON.stringify({
                 nombre_completo: nombre,
                 usuario: user,
                 correo: email,
@@ -33,13 +41,22 @@ const SignUp = (props) => {
               })
             });
           const resData = await res.json();
-          console.log('todo bien con el registro')
           console.log(resData)
-          nextPage();
+          if (resData.ok === false) {
+            seterror(true)
+          }
+          else {
+            console.log('todo bien con el registro')
+            console.log(resData)
+            nextPage();
+          }
+          seterror(false)
+
 
 
         } catch (e) {
           console.log(e)
+          seterror(e)
         }
       } else {
         console.log("Campos vacíos", "Por favor ingrese sus datos.", "warning")

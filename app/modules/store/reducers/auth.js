@@ -10,7 +10,8 @@ export default (state = initialState, action) => {
       case AUTHENTICATE:
         return {
           token: action.token,
-          name: action.name
+          name: action.name,
+          tarjeta: action.tarjeta
         };
       case LOGOUT:
         return initialState;

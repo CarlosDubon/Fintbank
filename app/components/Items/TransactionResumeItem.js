@@ -4,9 +4,11 @@ import {Block, Text} from "galio-framework";
 import {Image} from "react-native-paper/src/components/Avatar/Avatar";
 import colors from "../../modules/colors";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useSelector } from 'react-redux';
 
 const TransactionResumeItem = ({data}) => {
-
+    const tarjeta = useSelector(state => state.auth.tarjeta);
+   
     return (
         <Block style={styles.container} row>
             <Block>
@@ -14,16 +16,16 @@ const TransactionResumeItem = ({data}) => {
             </Block>
             <Block flex={2} middle left style={{marginStart:16}}>
                 <Block>
-                    <Text color={colors.BLACK} bold >Andy Landaverde</Text>
+                    <Text color={colors.BLACK} bold >{data.transacciones[0].cuenta_remitente===tarjeta?data.transacciones[0].cuenta_recibe:data.transacciones[0].cuenta_remitente}</Text>
                 </Block>
                 <Block row middle>
-                    <Icon color={data?colors.ERROR:colors.SUCCESS} name={data?"arrow-top-right":"arrow-bottom-left"} />
-                    <Text color={colors.MUTED} >{data?"Retiro":"Ingreso"}</Text>
+                    <Icon color={data.transacciones[0].cuenta_remitente===tarjeta?colors.ERROR:colors.SUCCESS} name={data.transacciones[0].cuenta_remitente!==tarjeta?"arrow-top-right":"arrow-bottom-left"} />
+                    <Text color={colors.MUTED} >{data.transacciones[0].cuenta_remitente===tarjeta?"Retiro":"Ingreso"}</Text>
                 </Block>
             </Block>
             <Block middle>
-                <Text bold h5 color={colors.BLACK} >$100</Text>
-                <Text  color={colors.MUTED} >26/6/2020</Text>
+                <Text bold h5 color={colors.BLACK} >${data.transacciones[0].monto}</Text>
+                <Text  color={colors.MUTED} >{data.transacciones[0].created_at.substr(0,10)}</Text>
             </Block>
         </Block>
     );

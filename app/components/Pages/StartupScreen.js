@@ -27,11 +27,11 @@ const StartupScreen = () => {
         return;
       }
       const transformedData = JSON.parse(userData);
-      const { token,name } = transformedData;
+      const { token,name, tarjeta } = transformedData;
 
 
       navigation.replace('Home');
-      dispatch(authActions.authenticate(token, name));
+      dispatch(authActions.authenticate(token, name, tarjeta));
     };
 
     tryLogin();

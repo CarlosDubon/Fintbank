@@ -7,9 +7,9 @@ export const LOGOUT = 'LOGOUT';
 
 let timer;
 
-export const authenticate = (token, name) => {
+export const authenticate = (token, name, tarjeta) => {
   return dispatch => {
-    dispatch({ type: AUTHENTICATE, token: token, name: name });
+    dispatch({ type: AUTHENTICATE, token: token, name: name , tarjeta:tarjeta});
   };
 };
 
@@ -31,16 +31,20 @@ export const login = (email, password) => {
             })
           });
         const resData = await res.json();
+        console.log(resData)
         if (resData.data.usuario.token) {
           console.log('todo bien con el login')
           console.log(resData)
-          dispatch(authenticate(resData.data.usuario.token, resData.data.usuario.nombre_completo));
+          dispatch(authenticate(resData.data.usuario.token, resData.data.usuario.nombre_completo, 0));
           /*const expirationDate = new Date(
             new Date().getTime() + parseInt(resData.expires_in) * 1000
           );*/
-          saveDataToStorage(resData.data.usuario.token, resData.data.usuario.nombre_completo);
+          saveDataToStorage(resData.data.usuario.token, resData.data.usuario.nombre_completo,0);
           return resData;
         } 
+        else{
+          return resData
+        }
 
       } catch (e) {
         console.log(e)
@@ -53,18 +57,19 @@ export const login = (email, password) => {
 
 
 
-const saveDataToStorage = (token, name) => {
+const saveDataToStorage = (token, name, tarjeta) => {
   AsyncStorage.setItem(
     'userData',
     JSON.stringify({
       token: token,
-      name:name
+      name:name,
+      tarjeta:tarjeta
     })
   );
 };
 
 export const logout = () => {
-  clearLogoutTimer();
+  //clearLogoutTimer();
   AsyncStorage.removeItem('userData');
   return { type: LOGOUT };
 };

@@ -15,6 +15,7 @@ const VirtualAccountCard = (props) => {
                 <Block style={styles.textContainer}>
                     <Block row space={"between"} >
                         <Image style={styles.chip} source={require("../../../assets/images/tarjeta.png")} />
+                        <Text h6 color={colors.WHITE}>{props.saldo}</Text>
                     </Block>
                     <Block style={{ marginTop: 15, marginRight:30 }}>
                         <Block row space={"between"}>

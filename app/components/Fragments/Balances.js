@@ -8,7 +8,14 @@ import TransactionHistory from "./TransactionHistory";
 
 import { useSelector } from 'react-redux';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import * as authActions from '../../modules/store/actions/auth'
+
 const Balances = (props) => {
+
+    const dispatch = useDispatch();
+    
     const isAuth = useSelector(state => state.auth.token);
     const name = useSelector(state => state.auth.name);
     const [cuenta, setcuenta] = useState()
@@ -16,6 +23,7 @@ const Balances = (props) => {
     const [cuenta3, setcuenta3] = useState()
     const [saldo, setsaldo] = useState()
     const [fecha, setfecha] = useState()
+    const [transacciones, settransacciones] = useState()
     const ultimasTransacciones = async () => {
         try {
             console.log(isAuth)
@@ -29,7 +37,10 @@ const Balances = (props) => {
                 });
             const resData = await res.json();
             console.log('todo bien con las últimas transacciones')
+            console.log('TRANSACCIONES')
             console.log(resData)
+            console.log(resData.msg)
+            settransacciones(resData.msg)
         } catch (e) {
             console.log('fallo con las transacciones')
             console.log(e)
@@ -48,6 +59,10 @@ const Balances = (props) => {
                     
                 });
             const resData = await res.json();
+            const userData = await AsyncStorage.getItem('userData');
+            const transformedData = JSON.parse(userData);
+            const { token,name} = transformedData;
+            dispatch(authActions.authenticate(token, name, resData.data[0].id));
             console.log('todo bien con los datos')
             console.log(resData)
             setcuenta(resData.data[0].id.substr(0,4))
@@ -55,6 +70,7 @@ const Balances = (props) => {
             setcuenta3(resData.data[0].id.substr(8,4))
             setsaldo(resData.data[0].saldo)
             setfecha(resData.data[0].created_at.substr(0,10))
+            
         } catch (e) {
             console.log('fallo con lo de la cuenta')
             console.log(e)
@@ -72,7 +88,11 @@ const Balances = (props) => {
                 <VirtualAccountCard  cuenta={cuenta} cuenta2={cuenta2} cuenta3={cuenta3} saldo={saldo} fecha={fecha}/>
             </Block>
             <Block flex={1} style={styles.historyContainer}>
-                <TransactionHistory />
+                {
+                    transacciones==='No se obtuvieron resultados'?<TransactionHistory/>:<TransactionHistory transacciones={transacciones}/>
+                    
+                }
+                
             </Block>
         </Block>
     );

@@ -69,7 +69,7 @@ const HistoryTransactionDetails = (props) => {
                 </Block>
                 <Block style={{marginHorizontal:16}}>
                     <FlatList
-                        data={data}
+                        data={props.route.params.data}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => index.toString()}
                     />

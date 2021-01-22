@@ -6,9 +6,9 @@ import Entypo from "react-native-vector-icons/Entypo";
 import colors from "../../modules/colors";
 import Card from "../Containers/Card";
 
-const IconCardButton = ({icon,title,subtitle}) => {
+const IconCardButton = ({icon,title,subtitle, nextPage}) => {
     return (
-        <TouchableOpacity style={{marginTop:8}}>
+        <TouchableOpacity style={{marginTop:8}} onPress={nextPage}>
             <Card>
                 <Block row>
                     <Block style={styles.containerIcon}>
