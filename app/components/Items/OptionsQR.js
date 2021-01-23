@@ -1,20 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, StyleSheet, Image, Pressable, Touchable, TouchableOpacity } from 'react-native';
 
 import { Block, Text, Input, Button } from "galio-framework";
 import colors from '../../modules/colors';
 import Card from '../Containers/Card';
 
+import { useSelector } from 'react-redux';
+import QRCode from 'react-native-qrcode-svg';
+
 const OptionsQR = () => {
     const [form, setform] = useState(false)
     const [monto, setmonto] = useState('')
     const [concepto, setconcepto] = useState('')
+    const [qr, setqr] = useState('')
+    const tarjeta = useSelector(state => state.auth.tarjeta);
 
     const emptyAvatar = (
         <Block style={styles.emptyAvatar}>
 
         </Block>
     )
+
+    const generarqr = () => {
+        setqr({cuenta_destino: tarjeta, monto: monto, concepto: concepto })
+    }
+
+    useEffect(() => {
+        setqr('')
+    }, [monto, concepto])
     return (
         <Block flex={1}>
             <Image style={styles.bkgd} source={require("../../modules/images/background-top.png")} />
@@ -59,8 +72,15 @@ const OptionsQR = () => {
             </View> : <View></View>}
             {concepto !== "" && monto !== "" ?
                 <Block style={styles.boton}>
-                    <Button color={colors.PRIMARY} round >Generar QR</Button>
-                </Block>:<View></View>}
+                    <Button color={colors.PRIMARY} round onPress={() => generarqr()}>Generar QR</Button>
+                </Block> : <View></View>}
+
+            {qr && concepto !== "" && monto !== ""?
+                <View style={{  alignSelf:'center', marginTop:40}}>
+                    <QRCode
+                        value={JSON.stringify(qr)}
+                        size={200} />
+                </View>:<View></View>}
 
         </Block>
     )
@@ -105,9 +125,9 @@ const styles = StyleSheet.create({
         borderStyle: "dashed",
 
     },
-    boton:{
-        marginHorizontal: 16 ,
-        marginTop:20
+    boton: {
+        marginHorizontal: 16,
+        marginTop: 20
 
     }
 })
