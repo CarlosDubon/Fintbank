@@ -39,7 +39,8 @@ const Balances = (props) => {
             console.log('todo bien con las últimas transacciones')
             console.log('TRANSACCIONES')
             console.log(resData)
-            console.log(resData.msg)
+            console.log('ESTOOOOOOOOOOOOO')
+            console.log(resData.msg[0].transacciones)
             settransacciones(resData.msg)
         } catch (e) {
             console.log('fallo con las transacciones')
@@ -81,25 +82,25 @@ const Balances = (props) => {
         const interval = setInterval(() => {
             ultimasTransacciones()
             datos()
-        }, 25000);
+        }, 55000);
+        
         ultimasTransacciones()
         datos()
+        
     }, [isAuth])
     return (
         <Block flex={1} >
-            <ScrollView>
-                <SmallProfile name={name} />
-                <Block style={{ margin: 16 }}>
-                    <VirtualAccountCard cuenta={cuenta} cuenta2={cuenta2} cuenta3={cuenta3} saldo={saldo} fecha={fecha} />
-                </Block>
-                <Block flex={1} style={styles.historyContainer}>
-                    {
-                        transacciones === 'No se obtuvieron resultados' ? <TransactionHistory /> : <TransactionHistory transacciones={transacciones} />
+            <SmallProfile name={name} />
+            <Block style={{ margin: 16 }}>
+                <VirtualAccountCard cuenta={cuenta} cuenta2={cuenta2} cuenta3={cuenta3} saldo={saldo} fecha={fecha} />
+            </Block>
+            <Block flex={1} style={styles.historyContainer}>
+                {
+                    transacciones === 'No se obtuvieron resultados' ? <TransactionHistory /> : <TransactionHistory transacciones={transacciones} />
 
-                    }
+                }
 
-                </Block>
-            </ScrollView>
+            </Block>
         </Block>
     );
 }

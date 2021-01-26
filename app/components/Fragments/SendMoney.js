@@ -96,7 +96,7 @@ const SendMoney = (props) => {
         console.log(tarjeta)
     }
     const Send = async () => {
-        console.log('LO QUE SE ENVIA')
+        console.log('LO QUE TIENE TRANSACCIONES')
         console.log(transacciones)
         let res;
         try {
@@ -119,6 +119,8 @@ const SendMoney = (props) => {
             }
             else {
                 console.log('SOLO UNA TRANSACCION')
+                console.log(transacciones[0])
+                console.log(tarjeta)
                 res = await fetch(`http://209.97.152.122:3001/account/transferencia`,
                     {
                         method: 'POST',
@@ -133,6 +135,7 @@ const SendMoney = (props) => {
                             concepto: transacciones[0].concepto,
                         })
                     });
+
             }
 
             const resData = await res.json();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Dimensions, FlatList, TouchableOpacity, SafeAreaView , View} from 'react-native'
+import { StyleSheet, Dimensions, FlatList, TouchableOpacity, SafeAreaView, View } from 'react-native'
 import { Block, Text } from "galio-framework";
 import SmallProfileDimiss from "../Items/SmallProfileDimiss";
 import VirtualAccountCard from "../Items/VirtualAccountCard";
@@ -19,10 +19,17 @@ const HistoryTransactionDetails = (props) => {
     const [opcion, setopcion] = useState(false)
 
     const crearListas = () => {
-        const trans = props.route.params.data.filter(item => item.transacciones[0].cuenta_remitente === tarjeta)
-        setegresos(trans)
-        const trans2 = props.route.params.data.filter(item => item.transacciones[0].cuenta_remitente !== tarjeta)
-        setingresos(trans2)
+        if (props.route.params.data !== null) {
+            const trans = props.route.params.data.filter(item => item.transacciones[0].cuenta_remitente_id === tarjeta)
+            setegresos(trans)
+            const trans2 = props.route.params.data.filter(item => item.transacciones[0].cuenta_remitente_id !== tarjeta)
+            setingresos(trans2)
+        }
+        console.log('LA DATA')
+        console.log(props.route.params.data)
+        
+
+
 
         console.log('INGRESOS Y EGRESOS')
         console.log(ingresos)
@@ -36,7 +43,7 @@ const HistoryTransactionDetails = (props) => {
     const renderItem = ({ item }) => (<TransactionResumeItem data={item} />)
 
     return (
-        <View style={{marginBottom:10, flex:1}}>
+        <View style={{ marginBottom: 10, flex: 1 }}>
             <Block flex={0.9} >
                 <SmallProfileDimiss />
                 <Block flex={1} >

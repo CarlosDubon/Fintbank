@@ -16,11 +16,11 @@ const TransactionResumeItem = ({data}) => {
             </Block>
             <Block flex={2} middle left style={{marginStart:16}}>
                 <Block>
-                    <Text color={colors.BLACK} bold >{data.transacciones[0].cuenta_remitente===tarjeta?data.transacciones[0].cuenta_recibe:data.transacciones[0].cuenta_remitente}</Text>
+                    <Text color={colors.BLACK} bold >{data.transacciones[0].cuenta_remitente_id===tarjeta?data.transacciones[0].recibe.nombre_completo:(data.transacciones[0].remitente!==null ? data.transacciones[0].recibe.nombre_completo : 'Desconocido')}</Text>
                 </Block>
                 <Block row middle>
-                    <Icon color={data.transacciones[0].cuenta_remitente===tarjeta?colors.ERROR:colors.SUCCESS} name={data.transacciones[0].cuenta_remitente!==tarjeta?"arrow-top-right":"arrow-bottom-left"} />
-                    <Text color={colors.MUTED} >{data.transacciones[0].cuenta_remitente===tarjeta?"Retiro":"Ingreso"}</Text>
+                    <Icon color={data.transacciones[0].cuenta_remitente_id===tarjeta?colors.ERROR:colors.SUCCESS} name={data.transacciones[0].cuenta_remitente_id!==tarjeta?"arrow-top-right":"arrow-bottom-left"} />
+                    <Text color={colors.MUTED} >{data.transacciones[0].cuenta_remitente_id===tarjeta?"Retiro":"Ingreso"}</Text>
                 </Block>
             </Block>
             <Block middle>
