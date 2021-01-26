@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native'
+import { ScrollView, StyleSheet } from 'react-native'
 import { Block } from "galio-framework";
 import SmallProfile from "../Items/SmallProfile";
 import colors from "../../modules/colors";
@@ -15,7 +15,7 @@ import * as authActions from '../../modules/store/actions/auth'
 const Balances = (props) => {
 
     const dispatch = useDispatch();
-    
+
     const isAuth = useSelector(state => state.auth.token);
     const name = useSelector(state => state.auth.name);
     const [cuenta, setcuenta] = useState()
@@ -33,7 +33,7 @@ const Balances = (props) => {
                     headers: {
                         'Authorization': `Bearer ${isAuth}`,
                     },
-                    
+
                 });
             const resData = await res.json();
             console.log('todo bien con las últimas transacciones')
@@ -56,21 +56,21 @@ const Balances = (props) => {
                     headers: {
                         'Authorization': `Bearer ${isAuth}`,
                     },
-                    
+
                 });
             const resData = await res.json();
             const userData = await AsyncStorage.getItem('userData');
             const transformedData = JSON.parse(userData);
-            const { token,name} = transformedData;
+            const { token, name } = transformedData;
             dispatch(authActions.authenticate(token, name, resData.data[0].id));
             console.log('todo bien con los datos')
             console.log(resData)
-            setcuenta(resData.data[0].id.substr(0,4))
-            setcuenta2(resData.data[0].id.substr(4,4))
-            setcuenta3(resData.data[0].id.substr(8,4))
+            setcuenta(resData.data[0].id.substr(0, 4))
+            setcuenta2(resData.data[0].id.substr(4, 4))
+            setcuenta3(resData.data[0].id.substr(8, 4))
             setsaldo(resData.data[0].saldo)
-            setfecha(resData.data[0].created_at.substr(0,10))
-            
+            setfecha(resData.data[0].created_at.substr(0, 10))
+
         } catch (e) {
             console.log('fallo con lo de la cuenta')
             console.log(e)
@@ -78,22 +78,28 @@ const Balances = (props) => {
     }
 
     useEffect(() => {
+        const interval = setInterval(() => {
+            ultimasTransacciones()
+            datos()
+        }, 25000);
         ultimasTransacciones()
         datos()
     }, [isAuth])
     return (
         <Block flex={1} >
-            <SmallProfile name={name}/>
-            <Block style={{ margin: 16 }}>
-                <VirtualAccountCard  cuenta={cuenta} cuenta2={cuenta2} cuenta3={cuenta3} saldo={saldo} fecha={fecha}/>
-            </Block>
-            <Block flex={1} style={styles.historyContainer}>
-                {
-                    transacciones==='No se obtuvieron resultados'?<TransactionHistory/>:<TransactionHistory transacciones={transacciones}/>
-                    
-                }
-                
-            </Block>
+            <ScrollView>
+                <SmallProfile name={name} />
+                <Block style={{ margin: 16 }}>
+                    <VirtualAccountCard cuenta={cuenta} cuenta2={cuenta2} cuenta3={cuenta3} saldo={saldo} fecha={fecha} />
+                </Block>
+                <Block flex={1} style={styles.historyContainer}>
+                    {
+                        transacciones === 'No se obtuvieron resultados' ? <TransactionHistory /> : <TransactionHistory transacciones={transacciones} />
+
+                    }
+
+                </Block>
+            </ScrollView>
         </Block>
     );
 }

@@ -33,7 +33,7 @@ const TransactionResumeItem = ({data}) => {
 const styles = StyleSheet.create({
     container:{
         paddingVertical:4,
-        marginVertical:8
+        marginVertical:8,
     }
 })
 export default TransactionResumeItem

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, TouchableOpacity, FlatList, ScrollView, View, Alert } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, FlatList, ScrollView, View, Alert, Pressable } from 'react-native'
 import { Block, Button, Input, Text } from "galio-framework";
 import colors from "../../modules/colors";
-import Icon from "react-native-vector-icons/Entypo";
 import Card from "../Containers/Card";
 import transaccion from '../../models/transaccion';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const SendMoney = (props) => {
 
@@ -17,10 +18,13 @@ const SendMoney = (props) => {
     const [transacciones, setTransacciones] = useState([])
     const isAuth = useSelector(state => state.auth.token);
 
-    const alerta=((mensaje) => {
-            Alert.alert('¡Un error ocurrio!', mensaje, [{ text: 'Okay' }])
+    const alerta = ((mensaje) => {
+        Alert.alert('¡Un error ocurrio!', mensaje, [{ text: 'Okay' }])
     })
 
+    const alertaOk = ((mensaje) => {
+        Alert.alert('¡Transacción realizada con exito!', mensaje, [{ text: 'Okay' }])
+    })
     const renderItem = ({ item }) => (
         <TouchableOpacity
             onPress={() => setMoney(item)}
@@ -36,6 +40,10 @@ const SendMoney = (props) => {
         </Block>
     )
 
+    useEffect(() => {
+
+    }, [transacciones])
+
     const createUI = () => (
         transacciones.map((el, i) => (
             <View key={i}>
@@ -46,10 +54,22 @@ const SendMoney = (props) => {
                                 {emptyAvatar}
                             </Block>
                             <Block flex={1} style={{ marginStart: 8 }}>
-                                <Input placeholder={"Ingrese la cuenta destino"} borderless onChangeText={text => handleChange(i, text, transacciones[i].monto)} value={transacciones[i]} />
+                                <Input placeholder={"Ingrese la cuenta destino"} borderless onChangeText={text => handleChange(i, text, transacciones[i].monto)} value={transacciones[i].cuenta} />
                                 <Input placeholder={"Monto"} borderless onChangeText={text => handleChange(i, transacciones[i].cuenta, text)} value={transacciones[i].monto} />
 
                             </Block>
+                            <TouchableOpacity onPress={() => {
+                                const trans = transacciones.filter(item => item.id !== transacciones[i].id)
+                                setTransacciones(trans)
+                                console.log('TRANSACCIONES')
+                                console.log(transacciones)
+                                console.log('ID')
+                                console.log(i)
+                            }}>
+                                <Block>
+                                    <Icon name={"delete"} color={colors.ERROR} size={30} />
+                                </Block>
+                            </TouchableOpacity>
 
                         </Block>
                     </Block>
@@ -119,9 +139,10 @@ const SendMoney = (props) => {
             console.log('todo bien con la transaccion')
             console.log(resData)
             if (resData.ok === true) {
+                alertaOk('')
                 navigation.replace('Home');
             }
-            else{
+            else {
                 alerta(resData.msg)
             }
         } catch (e) {
