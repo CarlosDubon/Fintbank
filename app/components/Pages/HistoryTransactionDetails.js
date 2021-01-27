@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Dimensions, FlatList, TouchableOpacity, SafeAreaView, View } from 'react-native'
+import { StyleSheet, Dimensions, FlatList, TouchableOpacity, SafeAreaView, View, ScrollView } from 'react-native'
 import { Block, Text } from "galio-framework";
 import SmallProfileDimiss from "../Items/SmallProfileDimiss";
 import VirtualAccountCard from "../Items/VirtualAccountCard";
@@ -44,6 +44,7 @@ const HistoryTransactionDetails = (props) => {
 
     return (
         <View style={{ marginBottom: 10, flex: 1 }}>
+            <ScrollView>
             <Block flex={0.9} >
                 <SmallProfileDimiss />
                 <Block flex={1} >
@@ -124,6 +125,7 @@ const HistoryTransactionDetails = (props) => {
                     </Block>
                 </Block>
             </Block>
+            </ScrollView>
         </View>
     )
         ;

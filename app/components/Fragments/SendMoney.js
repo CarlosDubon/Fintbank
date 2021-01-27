@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, TouchableOpacity, FlatList, ScrollView, View, Alert, Pressable } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, FlatList, ScrollView, View, Alert, Pressable, Dimensions } from 'react-native'
 import { Block, Button, Input, Text } from "galio-framework";
 import colors from "../../modules/colors";
 import Card from "../Containers/Card";
@@ -47,13 +47,16 @@ const SendMoney = (props) => {
     const createUI = () => (
         transacciones.map((el, i) => (
             <View key={i}>
-                <Card style={{ marginTop: 8, marginHorizontal: 16 }}>
+                <Card style={{ marginTop: 8, marginHorizontal: 16, marginBottom:5 }}>
                     <Block>
+                        <Image style={{ width: Dimensions.get('window').width / 7, height: Dimensions.get('window').height / 9.5, position: 'absolute' }} source={require("../../modules/images/background-top.png")} />
+                        <Image style={{ width: Dimensions.get('window').width / 7, height: Dimensions.get('window').height / 9.5, position: 'absolute', bottom: 0, right: 0, }} source={require("../../modules/images/background-bottom-01.png")} />
+
                         <Block row middle>
                             <Block>
-                                {emptyAvatar}
+                                <Icon name={'credit-card'} color={colors.PRIMARY} size={30} style={{ marginHorizontal: 3 }} />
                             </Block>
-                            <Block flex={1} style={{ marginStart: 8 }}>
+                            <Block flex={1} style={{ marginStart: 2 }}>
                                 <Input placeholder={"Ingrese la cuenta destino"} borderless onChangeText={text => handleChange(i, text, transacciones[i].monto)} value={transacciones[i].cuenta} />
                                 <Input placeholder={"Monto"} borderless onChangeText={text => handleChange(i, transacciones[i].cuenta, text)} value={transacciones[i].monto} />
 

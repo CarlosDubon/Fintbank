@@ -9,6 +9,7 @@ import Feather from "react-native-vector-icons/Feather";
 import SendMoney from "../Fragments/SendMoney";
 import Profile from "../Fragments/Profile";
 import OptionsQR from '../Items/OptionsQR';
+import PagoQR from '../Items/PagoQR';
 
 
 const Home = (props) => {
@@ -34,11 +35,18 @@ const Home = (props) => {
                     }}
                 />
                 <Tab.Screen
-                    name="QR" component={OptionsQR}
+                    name="Pago QR" component={PagoQR}
                     options={{
-                        tabBarIcon:({focused,color})=>(<Icon name={"arrow-down-circle"} color={color} size={25}/> )
+                        tabBarIcon:({focused,color})=>(<Icon name={"qrcode-scan"} color={color} size={25}/> )
                     }}
-                /><Tab.Screen
+                />
+                <Tab.Screen
+                    name="Cobro QR" component={OptionsQR}
+                    options={{
+                        tabBarIcon:({focused,color})=>(<Icon name={"qrcode-edit"} color={color} size={25}/> )
+                    }}
+                />
+                <Tab.Screen
                     name="Cuenta" component={Profile}
                     options={{
                         tabBarIcon:({focused,color})=>(focused?<Icon name={"account-circle"} color={color} size={25}/>:<Icon name={"account-circle-outline"} color={color} size={25}/> )

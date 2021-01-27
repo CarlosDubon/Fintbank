@@ -15,23 +15,19 @@ import { useNavigation } from '@react-navigation/native';
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const OptionsQR = () => {
+const PagoQR = () => {
     const navigation = useNavigation();
-    const [form, setform] = useState(false)
-    const [monto, setmonto] = useState('')
-    const [concepto, setconcepto] = useState('')
     const [qr, setqr] = useState('')
     const tarjeta = useSelector(state => state.auth.tarjeta);
-    const [pago, setpago] = useState('')
-    const [scaner, setscaner] = useState(false)
-
     const isAuth = useSelector(state => state.auth.token);
+    const [pago, setpago] = useState('')
 
     const emptyAvatar = (
         <Block style={styles.emptyAvatar}>
 
         </Block>
     )
+
     const alerta = ((mensaje) => {
         Alert.alert('¡Un error ocurrio!', mensaje, [{ text: 'Okay' }])
     })
@@ -44,10 +40,6 @@ const OptionsQR = () => {
         const resData = JSON.parse(res)
         setpago(resData)
     };
-
-    const generarqr = () => {
-        setqr([{ cuenta_destino: tarjeta, monto: monto, concepto: concepto }])
-    }
 
     const Send = async () => {
         console.log(pago.monto)
@@ -84,52 +76,47 @@ const OptionsQR = () => {
             console.log(e)
         }
     }
-
-    useEffect(() => {
-        setqr('')
-    }, [monto, concepto])
     return (
         <Block flex={1}>
-            <ScrollView>
-                <Image style={styles.bkgd} source={require("../../modules/images/background-top.png")} />
-                <Block style={{ marginTop: 24 }}>
-                    <Text h5 bold center color={colors.BLACK}>Cobrar por QR</Text>
-                </Block>
+            
+            <Image style={styles.bkgd} source={require("../../modules/images/background-top.png")} />
+            <Block style={{ marginTop: 24 }}>
+                <Text h5 bold center color={colors.BLACK}>Pagar por QR</Text>
+            </Block>
+
+
+            <QRCodeScanner
+                onRead={(e) => onSuccess(e)}
+                containerStyle={{ marginTop: 10 , }}
+                cameraStyle={{ height: Dimensions.get('window').height/3.5, marginTop: 20, width: Dimensions.get('window').width/1.7, alignSelf: 'center', justifyContent: 'space-around' , }}
+                reactivate={true}
+                reactivateTimeout={500}
+            />
+            {pago !== '' ?
                 <View>
-                    <Card style={{ marginTop: 28, marginHorizontal: 16 }}>
-                        <Image style={{ width: Dimensions.get('window').width / 7, height: Dimensions.get('window').height / 9.5, position: 'absolute' }} source={require("../../modules/images/background-top.png")} />
-                        <Image style={{ width: Dimensions.get('window').width / 7, height: Dimensions.get('window').height / 9.5, position: 'absolute', bottom: 0, right: 0, }} source={require("../../modules/images/background-bottom-01.png")} />
-
-                        <Block>
-                            <Block row middle>
-                                <Block >
-                                    <Icon name={'qrcode'} color={colors.PRIMARY} size={30} style={{marginHorizontal:10}}/>
-                                </Block>
-                                <Block flex={1} style={{ marginStart: 8, marginBottom: 20 }}>
-                                    <Input placeholder={"Concepto"} borderless onChangeText={text => setconcepto(text)} value={concepto} />
-                                    <Input placeholder={"Monto"} borderless onChangeText={text => setmonto(text)} value={monto} />
-
-                                </Block>
-
-                            </Block>
-                        </Block>
+                    <Card style={{ marginTop: 88, marginHorizontal: 16, width:Dimensions.get('window').width/1.8, alignSelf:'center' }}>
+                    <Image style={{width: Dimensions.get('window').width/7,height: Dimensions.get('window').height/9.5, position: 'absolute'}} source={require("../../modules/images/background-top.png")} />
+                    <Image style={{width: Dimensions.get('window').width/7,height: Dimensions.get('window').height/9.5, position: 'absolute', bottom: 0,right: 0,}} source={require("../../modules/images/background-bottom-01.png")} />    
+                        <View style={{alignSelf:'center'}}>
+                            <Icon name={'qrcode'} color={colors.PRIMARY} size={30} />
+                        </View>
+                        <View style={{ marginTop: 10, alignSelf:'center' }}>
+                            <Text h6 bold italic center>{pago[0].concepto}</Text>
+                        </View>
+                        <View style={{alignSelf:'center',  marginTop:10}}>
+                            <Text h5 bold center>$ {pago[0].monto}</Text>
+                        </View>
                     </Card>
+                    <Block style={styles.boton} >
+                        <Button color={colors.PRIMARY} style={{marginVertical:10}} round onPress={() => Send()}>Realizar pago</Button>
+                        <Button color={colors.ERROR} round onPress={() => setpago('')}>Eliminar pago</Button>
+                    </Block>
                 </View>
-                {concepto !== "" && monto !== "" ?
-                    <Block style={styles.boton}>
-                        <Button color={colors.PRIMARY} round onPress={() => generarqr()}>Generar QR</Button>
-                    </Block> : <View></View>}
-
-                {qr && concepto !== "" && monto !== "" ?
-                    <View style={{ alignSelf: 'center', marginTop: 40, marginBottom:10 }}>
-                        <QRCode
-                            value={JSON.stringify(qr)}
-                            size={200} />
-                    </View> : <View></View>}
-            </ScrollView>
+                : <View></View>}
         </Block>
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         borderRadius: 16,
@@ -172,8 +159,10 @@ const styles = StyleSheet.create({
     },
     boton: {
         marginHorizontal: 16,
-        marginTop: 20
+        marginTop: 20,
+        marginBottom:10
 
     }
 })
-export default OptionsQR;
+
+export default PagoQR;

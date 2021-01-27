@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import { Block } from "galio-framework";
 import SmallProfile from "../Items/SmallProfile";
 import colors from "../../modules/colors";
@@ -83,12 +83,13 @@ const Balances = (props) => {
             ultimasTransacciones()
             datos()
         }, 55000);
-        
+
         ultimasTransacciones()
         datos()
-        
+
     }, [isAuth])
     return (
+
         <Block flex={1} >
             <SmallProfile name={name} />
             <Block style={{ margin: 16 }}>
@@ -99,7 +100,6 @@ const Balances = (props) => {
                     transacciones === 'No se obtuvieron resultados' ? <TransactionHistory /> : <TransactionHistory transacciones={transacciones} />
 
                 }
-
             </Block>
         </Block>
     );
