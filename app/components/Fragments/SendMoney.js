@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const SendMoney = (props) => {
 
@@ -17,6 +18,12 @@ const SendMoney = (props) => {
     const [suggest, setSuggest] = useState([50, 100, 150, 300])
     const [transacciones, setTransacciones] = useState([])
     const isAuth = useSelector(state => state.auth.token);
+    const [confirm, setconfirm] = useState(false)
+    const [problem, setproblem] = useState(false)
+    
+    const [mensaje, setmensaje] = useState(false)
+    const [cuenta, setcuenta] = useState('')
+    const [monto, setmonto] = useState('')
 
     const alerta = ((mensaje) => {
         Alert.alert('¡Un error ocurrio!', mensaje, [{ text: 'Okay' }])
@@ -47,7 +54,7 @@ const SendMoney = (props) => {
     const createUI = () => (
         transacciones.map((el, i) => (
             <View key={i}>
-                <Card style={{ marginTop: 8, marginHorizontal: 16, marginBottom:5 }}>
+                <Card style={{ marginTop: 8, marginHorizontal: 16, marginBottom: 5 }}>
                     <Block>
                         <Image style={{ width: Dimensions.get('window').width / 7, height: Dimensions.get('window').height / 9.5, position: 'absolute' }} source={require("../../modules/images/background-top.png")} />
                         <Image style={{ width: Dimensions.get('window').width / 7, height: Dimensions.get('window').height / 9.5, position: 'absolute', bottom: 0, right: 0, }} source={require("../../modules/images/background-bottom-01.png")} />
@@ -145,11 +152,14 @@ const SendMoney = (props) => {
             console.log('todo bien con la transaccion')
             console.log(resData)
             if (resData.ok === true) {
-                alertaOk('')
-                navigation.replace('Home');
+                setmonto(transacciones[0].monto)
+                setcuenta(transacciones[0].cuenta)
+                setconfirm(true)
+                
             }
             else {
-                alerta(resData.msg)
+                setmensaje(resData.msg)
+                setproblem(true)
             }
         } catch (e) {
             console.log('fallo con las transaccion')
@@ -181,6 +191,36 @@ const SendMoney = (props) => {
                     <Button color={colors.PRIMARY} round onPress={Send}>Enviar</Button>
                 </Block>
             </Block>
+            <AwesomeAlert
+                show={confirm}
+                showProgress={false}
+                title="¡Transacción realizada con exito!"
+                message={ `A la cuenta ${cuenta} por $${monto}` }
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText="OK"
+                confirmButtonColor={colors.PRIMARY}
+                onConfirmPressed={() => {
+                    setconfirm(false)
+                    navigation.replace('Home');
+                }}
+            />
+            <AwesomeAlert
+                show={problem}
+                showProgress={false}
+                title="¡Un error ocurrió!"
+                message={mensaje}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText="OK"
+                confirmButtonColor="#DD6B55"
+                
+                onConfirmPressed={() => {
+                    setproblem(false)
+                }}
+            />
         </Block>
     );
 }

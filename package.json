@@ -20,8 +20,10 @@
     "native-base": "^2.13.12",
     "react": "16.11.0",
     "react-native": "0.62.2",
+    "react-native-awesome-alerts": "^1.4.2",
     "react-native-camera": "^3.42.0",
     "react-native-chart-kit": "^6.2.3",
+    "react-native-elements": "^3.1.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-paper": "^3.10.1",
     "react-native-permissions": "^3.0.0",
@@ -34,7 +36,8 @@
     "react-native-vector-icons": "^6.6.0",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "rn-tooltip": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "7.10.2",

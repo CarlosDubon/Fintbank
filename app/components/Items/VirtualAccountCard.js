@@ -10,8 +10,6 @@ const VirtualAccountCard = (props) => {
 
     return (
         <Block style={styles.container}>
-            <Image style={styles.bkgd} source={require("../../modules/images/background-top.png")} />
-            <Image style={styles.bkgdBottom} source={require("../../modules/images/background-bottom-01.png")} />
             <Block flex={1}>
                 <Block style={styles.textContainer}>
                     <Block style={{ marginTop: 25 }} row space={"between"}>

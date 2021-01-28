@@ -3,6 +3,8 @@ import { Image, StyleSheet, TouchableOpacity, Alert, ScrollView } from 'react-na
 import { Block, Button, Input, Text } from "galio-framework";
 import colors from "../../modules/colors";
 
+import AwesomeAlert from 'react-native-awesome-alerts';
+
 const SignUp = (props) => {
   const [email, setEmail] = useState('')
   const [dui, setDui] = useState('')
@@ -12,11 +14,15 @@ const SignUp = (props) => {
   const [telefono, setTelefono] = useState('')
   const [user, setUser] = useState('')
   const [error, seterror] = useState('')
+  const [confirm, setconfirm] = useState(false)
+  const [problem, setproblem] = useState(false)
+  const [mensaje, setmensaje] = useState('')
 
   useEffect(() => {
     if (error) {
-      Alert.alert('An error Ocurred!', 'No se pudo registrar el usuario', [{ text: 'Okay' }])
+      setproblem(true)
     }
+
 
   }, [error]);
 
@@ -44,12 +50,15 @@ const SignUp = (props) => {
           console.log(resData)
           if (resData.ok === false) {
             seterror(true)
+            setmensaje('No se pudo crear el usuario')
+            setproblem(true)
           }
           else {
             console.log('todo bien con el registro')
             console.log(resData)
-            Alert.alert('Usurio creado!', resData.msg, [{ text: 'Okay' }])
-            nextPage();
+            setmensaje(resData.msg)
+            setconfirm(true)
+            
           }
           seterror(false)
 
@@ -115,6 +124,36 @@ const SignUp = (props) => {
             </Block>
           </Block>
         </Block>
+        <AwesomeAlert
+          show={confirm}
+          showProgress={false}
+          title="¡Usuario creado!"
+          message={mensaje}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showConfirmButton={true}
+          confirmText="OK"
+          confirmButtonColor={colors.PRIMARY}
+          onConfirmPressed={() => {
+            setconfirm(false)
+            nextPage();
+          }}
+        />
+        <AwesomeAlert
+          show={problem}
+          showProgress={false}
+          title="¡Un error ocurrió!"
+          message={mensaje}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showConfirmButton={true}
+          confirmText="OK"
+          confirmButtonColor="#DD6B55"
+
+          onConfirmPressed={() => {
+            setproblem(false)
+          }}
+        />
       </ScrollView>
     </Block>
   );

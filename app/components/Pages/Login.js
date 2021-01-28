@@ -5,15 +5,19 @@ import colors from "../../modules/colors";
 import { useDispatch } from 'react-redux';
 import * as authActions from '../../modules/store/actions/auth'
 
+import AwesomeAlert from 'react-native-awesome-alerts';
+
 const Login = (props) => {
     const [error, setError] = useState();
     const dispatch = useDispatch();
     const [user, setUser] = useState('')
     const [password, setPassword] = useState('')
+    const [problem, setproblem] = useState(false)
+    const [mensaje, setmensaje] = useState('No se pudo iniciar sesión')
 
     useEffect(() => {
         if (error) {
-            Alert.alert('An error Ocurred!', 'No se pudo iniciar sesión', [{ text: 'Okay' }])
+            setproblem(true)
         }
 
     }, [error]);
@@ -29,6 +33,7 @@ const Login = (props) => {
                 console.log(valor.data.usuario.token)
                 props.navigation.navigate("Home");
             }
+            
 
         } catch (err) {
             setError(err)
@@ -73,6 +78,22 @@ const Login = (props) => {
                     </Block>
                 </Block>
             </Block>
+            
+            <AwesomeAlert
+                show={problem}
+                showProgress={false}
+                title="¡Un error ocurrió!"
+                message={"No se pudo iniciar sesión"}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText="OK"
+                confirmButtonColor="#DD6B55"
+                
+                onConfirmPressed={() => {
+                    setproblem(false)
+                }}
+            />
         </Block>
     );
 }

@@ -14,6 +14,7 @@ import { RNCamera } from 'react-native-camera';
 import { useNavigation } from '@react-navigation/native';
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const PagoQR = () => {
     const navigation = useNavigation();
@@ -21,6 +22,9 @@ const PagoQR = () => {
     const tarjeta = useSelector(state => state.auth.tarjeta);
     const isAuth = useSelector(state => state.auth.token);
     const [pago, setpago] = useState('')
+    const [confirm, setconfirm] = useState(false)
+    const [problem, setproblem] = useState(false)
+    const [mensaje, setmensaje] = useState(false)
 
     const emptyAvatar = (
         <Block style={styles.emptyAvatar}>
@@ -65,11 +69,11 @@ const PagoQR = () => {
             console.log('todo bien con la transaccion')
             console.log(resData)
             if (resData.ok === true) {
-                alertaOk('')
-                navigation.replace('Home');
+                setconfirm(true)
             }
             else {
-                alerta(resData.msg)
+                setmensaje(resData.msg)
+                setproblem(true)
             }
         } catch (e) {
             console.log('fallo con las transaccion')
@@ -113,6 +117,36 @@ const PagoQR = () => {
                     </Block>
                 </View>
                 : <View></View>}
+                <AwesomeAlert
+                show={confirm}
+                showProgress={false}
+                title="¡Transacción realizada con exito!"
+                message={ `El pago por QR fue realizado con exito` }
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText="OK"
+                confirmButtonColor={colors.PRIMARY}
+                onConfirmPressed={() => {
+                    setconfirm(false)
+                    navigation.replace('Home');
+                }}
+            />
+            <AwesomeAlert
+                show={problem}
+                showProgress={false}
+                title="¡Un error ocurrió!"
+                message={mensaje}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showConfirmButton={true}
+                confirmText="OK"
+                confirmButtonColor="#DD6B55"
+                
+                onConfirmPressed={() => {
+                    setproblem(false)
+                }}
+            />
         </Block>
     )
 }
